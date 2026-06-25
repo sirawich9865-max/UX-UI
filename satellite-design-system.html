@@ -1,0 +1,983 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OrbitWatch Design System</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #080b10;
+        --panel: #10151d;
+        --panel-2: #151b24;
+        --line: #26313f;
+        --line-strong: #3a485b;
+        --text: #eef4ff;
+        --muted: #9aa9bb;
+        --soft: #d5deea;
+        --cyan: #55d6ff;
+        --cyan-2: #197fa3;
+        --green: #6ee7a7;
+        --amber: #f3c969;
+        --coral: #ff7b7b;
+        --violet: #a78bfa;
+        --earth: #14283a;
+        --earth-line: #315778;
+        --land: #275843;
+        --land-2: #416c55;
+        --shadow: 0 18px 48px rgba(0, 0, 0, 0.34);
+        --radius: 8px;
+        --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        min-width: 320px;
+        background: var(--bg);
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: var(--font);
+        color: var(--text);
+        background:
+          linear-gradient(180deg, rgba(85, 214, 255, 0.08), transparent 36rem),
+          radial-gradient(circle at 12% 14%, rgba(110, 231, 167, 0.12), transparent 18rem),
+          var(--bg);
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button {
+        border: 0;
+      }
+
+      .shell {
+        width: min(1440px, 100%);
+        margin: 0 auto;
+        padding: 18px;
+      }
+
+      .topbar {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 16px;
+        align-items: center;
+        min-height: 64px;
+        padding: 10px 0 18px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        min-width: 0;
+        gap: 12px;
+      }
+
+      .brand-mark {
+        display: grid;
+        place-items: center;
+        width: 42px;
+        height: 42px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: linear-gradient(145deg, rgba(85, 214, 255, 0.22), rgba(110, 231, 167, 0.12));
+        box-shadow: inset 0 0 24px rgba(85, 214, 255, 0.14);
+      }
+
+      .brand-mark svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      .brand h1 {
+        margin: 0;
+        font-size: clamp(1.25rem, 2.2vw, 2rem);
+        line-height: 1.05;
+        letter-spacing: 0;
+      }
+
+      .brand p {
+        margin: 4px 0 0;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .top-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 40px;
+        padding: 0 14px;
+        border-radius: var(--radius);
+        border: 1px solid var(--line);
+        color: var(--text);
+        background: var(--panel-2);
+        cursor: pointer;
+        transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+      }
+
+      .btn:hover {
+        border-color: var(--cyan);
+        background: #1a2330;
+      }
+
+      .btn:active {
+        transform: translateY(1px);
+      }
+
+      .btn.primary {
+        color: #021014;
+        border-color: transparent;
+        background: linear-gradient(135deg, var(--cyan), var(--green));
+      }
+
+      .btn.icon {
+        width: 40px;
+        padding: 0;
+      }
+
+      .btn svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .dashboard {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 336px;
+        gap: 18px;
+        align-items: start;
+      }
+
+      .map-panel,
+      .side-panel,
+      .system-section {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: rgba(16, 21, 29, 0.9);
+        box-shadow: var(--shadow);
+      }
+
+      .map-panel {
+        min-width: 0;
+        overflow: hidden;
+      }
+
+      .map-header,
+      .side-header,
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .map-header h2,
+      .side-header h2,
+      .section-header h2 {
+        margin: 0;
+        font-size: 1rem;
+        letter-spacing: 0;
+      }
+
+      .status-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 0.86rem;
+        white-space: nowrap;
+      }
+
+      .pulse {
+        width: 9px;
+        height: 9px;
+        border-radius: 999px;
+        background: var(--green);
+        box-shadow: 0 0 0 7px rgba(110, 231, 167, 0.12);
+      }
+
+      .map-stage {
+        position: relative;
+        aspect-ratio: 16 / 9;
+        min-height: 420px;
+        overflow: hidden;
+        background:
+          linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+          #07101a;
+        background-size: 42px 42px;
+      }
+
+      .world-map {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .world-map .ocean {
+        fill: var(--earth);
+        stroke: var(--earth-line);
+        stroke-width: 1.3;
+      }
+
+      .world-map .land {
+        fill: var(--land);
+        stroke: var(--land-2);
+        stroke-width: 1;
+      }
+
+      .world-map .gridline {
+        stroke: rgba(213, 222, 234, 0.14);
+        stroke-width: 0.8;
+      }
+
+      .orbit-line {
+        position: absolute;
+        left: 8%;
+        top: 12%;
+        width: 84%;
+        height: 76%;
+        border: 1px solid rgba(85, 214, 255, 0.14);
+        border-radius: 50%;
+        transform: rotate(-10deg);
+        pointer-events: none;
+      }
+
+      .orbit-line:nth-of-type(2) {
+        transform: rotate(18deg);
+        border-color: rgba(167, 139, 250, 0.12);
+      }
+
+      .satellite {
+        position: absolute;
+        left: var(--x, 50%);
+        top: var(--y, 50%);
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        translate: -50% -50%;
+        background: var(--sat-color, var(--cyan));
+        box-shadow:
+          0 0 0 4px rgba(85, 214, 255, 0.14),
+          0 0 18px var(--sat-color, var(--cyan));
+        z-index: 3;
+      }
+
+      .satellite::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 22px;
+        height: 1px;
+        border-left: 6px solid rgba(238, 244, 255, 0.92);
+        border-right: 6px solid rgba(238, 244, 255, 0.92);
+        translate: -50% -50%;
+        transform: rotate(var(--tilt, 20deg));
+      }
+
+      .satellite::after {
+        content: attr(data-name);
+        position: absolute;
+        left: 14px;
+        top: -8px;
+        width: max-content;
+        max-width: 120px;
+        padding: 3px 6px;
+        border: 1px solid rgba(213, 222, 234, 0.18);
+        border-radius: 6px;
+        color: var(--soft);
+        background: rgba(8, 11, 16, 0.72);
+        font-size: 0.72rem;
+        line-height: 1.1;
+        opacity: 0;
+        transition: opacity 140ms ease;
+        pointer-events: none;
+      }
+
+      .satellite:hover::after,
+      .satellite.is-focus::after {
+        opacity: 1;
+      }
+
+      .map-readout {
+        position: absolute;
+        left: 16px;
+        bottom: 16px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(96px, 1fr));
+        gap: 8px;
+        width: min(520px, calc(100% - 32px));
+        z-index: 4;
+      }
+
+      .metric {
+        min-width: 0;
+        padding: 10px;
+        border: 1px solid rgba(213, 222, 234, 0.14);
+        border-radius: var(--radius);
+        background: rgba(8, 11, 16, 0.76);
+        backdrop-filter: blur(8px);
+      }
+
+      .metric span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.72rem;
+      }
+
+      .metric strong {
+        display: block;
+        margin-top: 5px;
+        overflow-wrap: anywhere;
+        font-size: 1rem;
+        line-height: 1.15;
+      }
+
+      .side-panel {
+        overflow: hidden;
+      }
+
+      .sat-list {
+        display: grid;
+        max-height: 612px;
+        overflow: auto;
+      }
+
+      .sat-item {
+        display: grid;
+        grid-template-columns: 12px minmax(0, 1fr) auto;
+        gap: 10px;
+        align-items: center;
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--line);
+        color: inherit;
+        background: transparent;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .sat-item:hover,
+      .sat-item.active {
+        background: rgba(85, 214, 255, 0.08);
+      }
+
+      .sat-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: var(--sat-color, var(--cyan));
+        box-shadow: 0 0 12px var(--sat-color, var(--cyan));
+      }
+
+      .sat-name {
+        display: block;
+        overflow: hidden;
+        color: var(--text);
+        font-weight: 700;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .sat-meta {
+        display: block;
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 0.76rem;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        min-height: 24px;
+        padding: 0 8px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--soft);
+        background: #0d1219;
+        font-size: 0.75rem;
+        white-space: nowrap;
+      }
+
+      .badge.green {
+        color: #092015;
+        border-color: transparent;
+        background: var(--green);
+      }
+
+      .badge.amber {
+        color: #241704;
+        border-color: transparent;
+        background: var(--amber);
+      }
+
+      .design-system {
+        display: grid;
+        gap: 18px;
+        margin-top: 18px;
+      }
+
+      .component-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        padding: 16px;
+      }
+
+      .swatch {
+        min-width: 0;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel-2);
+      }
+
+      .swatch-color {
+        height: 58px;
+        background: var(--swatch);
+      }
+
+      .swatch-body {
+        padding: 10px;
+      }
+
+      .swatch-body strong,
+      .type-sample strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .swatch-body code,
+      .type-sample code {
+        color: var(--muted);
+        font-size: 0.78rem;
+        overflow-wrap: anywhere;
+      }
+
+      .component-strip {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        padding: 16px;
+      }
+
+      .type-grid {
+        display: grid;
+        grid-template-columns: 1.25fr 1fr 1fr;
+        gap: 12px;
+        padding: 16px;
+      }
+
+      .type-sample {
+        min-width: 0;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel-2);
+      }
+
+      .type-sample.display strong {
+        font-size: clamp(1.45rem, 3vw, 2.25rem);
+        line-height: 1.05;
+      }
+
+      .type-sample.title strong {
+        font-size: 1.1rem;
+      }
+
+      .control-demo {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        padding: 16px;
+      }
+
+      .mini-panel {
+        min-width: 0;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel-2);
+      }
+
+      .segmented {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
+        padding: 4px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: #0b1017;
+      }
+
+      .segmented button {
+        min-height: 34px;
+        border-radius: 6px;
+        color: var(--muted);
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .segmented button.active {
+        color: #031017;
+        background: var(--cyan);
+      }
+
+      .toggle-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+        margin-top: 14px;
+        color: var(--soft);
+      }
+
+      .toggle {
+        position: relative;
+        width: 48px;
+        height: 28px;
+        flex: 0 0 auto;
+      }
+
+      .toggle input {
+        position: absolute;
+        opacity: 0;
+      }
+
+      .toggle span {
+        position: absolute;
+        inset: 0;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: #0b1017;
+      }
+
+      .toggle span::after {
+        content: "";
+        position: absolute;
+        left: 4px;
+        top: 4px;
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: var(--muted);
+        transition: transform 160ms ease, background 160ms ease;
+      }
+
+      .toggle input:checked + span {
+        border-color: transparent;
+        background: var(--green);
+      }
+
+      .toggle input:checked + span::after {
+        transform: translateX(20px);
+        background: #06130d;
+      }
+
+      .slider {
+        width: 100%;
+        accent-color: var(--cyan);
+      }
+
+      .marker-demo {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        min-height: 80px;
+      }
+
+      .marker-large {
+        position: relative;
+        width: 16px;
+        height: 16px;
+        border-radius: 999px;
+        background: var(--cyan);
+        box-shadow: 0 0 0 7px rgba(85, 214, 255, 0.15), 0 0 24px var(--cyan);
+      }
+
+      .marker-large::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 36px;
+        height: 2px;
+        translate: -50% -50%;
+        border-left: 10px solid var(--soft);
+        border-right: 10px solid var(--soft);
+      }
+
+      @media (max-width: 1080px) {
+        .dashboard {
+          grid-template-columns: 1fr;
+        }
+
+        .side-panel {
+          order: 2;
+        }
+
+        .sat-list {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          max-height: none;
+        }
+
+        .sat-item {
+          border-right: 1px solid var(--line);
+        }
+
+        .component-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .type-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .shell {
+          padding: 12px;
+        }
+
+        .topbar {
+          grid-template-columns: 1fr;
+        }
+
+        .top-actions {
+          justify-content: stretch;
+        }
+
+        .top-actions .btn {
+          flex: 1 1 auto;
+        }
+
+        .map-stage {
+          aspect-ratio: 3 / 4;
+          min-height: 560px;
+        }
+
+        .map-readout {
+          grid-template-columns: 1fr;
+        }
+
+        .sat-list,
+        .component-grid,
+        .control-demo {
+          grid-template-columns: 1fr;
+        }
+
+        .map-header,
+        .side-header,
+        .section-header {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="4" stroke="#55d6ff" stroke-width="1.8" />
+              <path d="M3 12c4.8-6.2 13.2-6.2 18 0M3 12c4.8 6.2 13.2 6.2 18 0" stroke="#6ee7a7" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+          </div>
+          <div>
+            <h1>OrbitWatch</h1>
+            <p>ระบบแสดงตำแหน่งดาวเทียมสมมติแบบเรียลไทม์</p>
+          </div>
+        </div>
+
+        <div class="top-actions" aria-label="Toolbar">
+          <button class="btn icon" id="speedDown" title="ลดความเร็ว" aria-label="ลดความเร็ว">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M19 20 9 12l10-8v16ZM5 5v14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+          <button class="btn primary" id="pauseToggle">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M10 5H6v14h4V5ZM18 5h-4v14h4V5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+            </svg>
+            <span>Pause</span>
+          </button>
+          <button class="btn icon" id="speedUp" title="เพิ่มความเร็ว" aria-label="เพิ่มความเร็ว">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="m5 4 10 8-10 8V4ZM19 5v14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <section class="dashboard" aria-label="Satellite dashboard">
+        <article class="map-panel">
+          <div class="map-header">
+            <h2>แผนที่โลก 2D</h2>
+            <div class="status-row"><span class="pulse"></span><span id="clock">LIVE 00:00:00</span></div>
+          </div>
+
+          <div class="map-stage" id="mapStage">
+            <svg class="world-map" viewBox="0 0 1200 675" role="img" aria-label="World map">
+              <rect class="ocean" x="38" y="44" width="1124" height="587" rx="20" />
+              <path class="gridline" d="M38 191.5h1124M38 337.5h1124M38 484h1124M225 44v587M412 44v587M600 44v587M787 44v587M974 44v587" />
+              <path class="land" d="M161 164c38-36 113-42 158-16 23 13 35 39 21 58-19 25-64 12-86 29-24 19 12 57-22 74-32 16-83-14-103-42-28-40-9-76 32-103Z" />
+              <path class="land" d="M302 344c33-14 83-8 104 18 20 24 11 64-13 95-20 26-23 63-50 76-29 14-57-14-62-52-3-29-26-41-19-73 5-24 18-54 40-64Z" />
+              <path class="land" d="M516 154c30-20 75-16 103 0 28 15 71 5 96 30 24 24 6 55-26 59-38 5-40 30-75 35-38 6-67-11-100-20-41-11-71 5-92-23-19-27 50-51 94-81Z" />
+              <path class="land" d="M690 278c56-34 138-28 190 4 49 30 59 82 30 120-25 32-69 35-110 27-43-9-75-5-102-28-31-27-52-96-8-123Z" />
+              <path class="land" d="M850 178c40-35 118-32 167-11 29 12 75 20 92 51 14 27-10 48-46 47-38-1-50 26-88 23-30-2-63-22-90-28-42-9-70-52-35-82Z" />
+              <path class="land" d="M892 438c28-11 65-4 86 19 20 22 46 32 40 62-6 31-44 52-79 43-29-8-45-35-70-49-25-13-11-61 23-75Z" />
+              <path class="land" d="M494 483c19-11 54-5 63 18 7 18-15 39-43 38-30-1-52-41-20-56Z" />
+            </svg>
+            <div class="orbit-line"></div>
+            <div class="orbit-line"></div>
+            <div class="map-readout">
+              <div class="metric"><span>ดาวเทียม</span><strong id="selectedName">Astra-01</strong></div>
+              <div class="metric"><span>Lat / Lng</span><strong id="selectedPosition">0.00, 0.00</strong></div>
+              <div class="metric"><span>Altitude</span><strong id="selectedAltitude">540 km</strong></div>
+            </div>
+          </div>
+        </article>
+
+        <aside class="side-panel" aria-label="Satellite list">
+          <div class="side-header">
+            <h2>กลุ่มดาวเทียม</h2>
+            <span class="badge green">20 active</span>
+          </div>
+          <div class="sat-list" id="satList"></div>
+        </aside>
+      </section>
+
+      <section class="design-system" aria-label="Design system">
+        <article class="system-section">
+          <div class="section-header">
+            <h2>Foundations</h2>
+            <span class="badge">Design tokens</span>
+          </div>
+          <div class="component-grid">
+            <div class="swatch"><div class="swatch-color" style="--swatch:#080b10"></div><div class="swatch-body"><strong>Void</strong><code>#080b10</code></div></div>
+            <div class="swatch"><div class="swatch-color" style="--swatch:#55d6ff"></div><div class="swatch-body"><strong>Telemetry</strong><code>#55d6ff</code></div></div>
+            <div class="swatch"><div class="swatch-color" style="--swatch:#6ee7a7"></div><div class="swatch-body"><strong>Signal</strong><code>#6ee7a7</code></div></div>
+            <div class="swatch"><div class="swatch-color" style="--swatch:#f3c969"></div><div class="swatch-body"><strong>Warning</strong><code>#f3c969</code></div></div>
+          </div>
+          <div class="type-grid">
+            <div class="type-sample display"><strong>OrbitWatch Display</strong><code>Display / responsive clamp</code></div>
+            <div class="type-sample title"><strong>Panel Title</strong><code>16px / 700</code></div>
+            <div class="type-sample"><strong>Body Copy</strong><code>System UI / 14px</code></div>
+          </div>
+        </article>
+
+        <article class="system-section">
+          <div class="section-header">
+            <h2>Components</h2>
+            <span class="badge amber">HTML states</span>
+          </div>
+          <div class="component-strip">
+            <button class="btn primary">Primary</button>
+            <button class="btn">Secondary</button>
+            <span class="badge green">Active</span>
+            <span class="badge amber">Drift</span>
+            <span class="badge">Idle</span>
+          </div>
+          <div class="control-demo">
+            <div class="mini-panel">
+              <div class="segmented" aria-label="View mode">
+                <button class="active">Map</button>
+                <button>Orbit</button>
+                <button>Fleet</button>
+              </div>
+              <label class="toggle-row">
+                <span>Signal layer</span>
+                <span class="toggle"><input type="checkbox" checked /><span></span></span>
+              </label>
+              <label class="toggle-row">
+                <span>Orbit speed</span>
+                <input class="slider" type="range" min="1" max="5" value="3" />
+              </label>
+            </div>
+            <div class="mini-panel marker-demo">
+              <span class="marker-large" aria-hidden="true"></span>
+              <div>
+                <strong>Satellite marker</strong>
+                <div class="sat-meta">Position label, glow state, solar panel silhouette</div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <script>
+      const satellites = [
+        ["Astra-01", 540, "#55d6ff", 0.19, 0.34, 0.92],
+        ["Nova-02", 610, "#6ee7a7", 0.55, 0.28, 0.78],
+        ["Kepler-03", 720, "#f3c969", 0.83, 0.48, 0.64],
+        ["Helio-04", 680, "#ff7b7b", 0.34, 0.62, 0.86],
+        ["Zenith-05", 500, "#a78bfa", 0.72, 0.21, 0.72],
+        ["Atlas-06", 590, "#55d6ff", 0.44, 0.42, 0.81],
+        ["Vega-07", 760, "#6ee7a7", 0.12, 0.55, 0.68],
+        ["Orion-08", 660, "#f3c969", 0.67, 0.67, 0.74],
+        ["Lyra-09", 520, "#ff7b7b", 0.91, 0.33, 0.88],
+        ["Cosmo-10", 800, "#a78bfa", 0.27, 0.76, 0.62],
+        ["Pulse-11", 570, "#55d6ff", 0.76, 0.58, 0.83],
+        ["Nadir-12", 630, "#6ee7a7", 0.51, 0.13, 0.76],
+        ["Vector-13", 700, "#f3c969", 0.05, 0.44, 0.71],
+        ["Prism-14", 560, "#ff7b7b", 0.39, 0.25, 0.84],
+        ["Aether-15", 740, "#a78bfa", 0.88, 0.72, 0.66],
+        ["Nimbus-16", 605, "#55d6ff", 0.61, 0.82, 0.79],
+        ["Echo-17", 515, "#6ee7a7", 0.22, 0.17, 0.89],
+        ["Solace-18", 675, "#f3c969", 0.96, 0.61, 0.69],
+        ["Radian-19", 790, "#ff7b7b", 0.47, 0.91, 0.61],
+        ["Beacon-20", 550, "#a78bfa", 0.15, 0.84, 0.87]
+      ].map((item, index) => ({
+        id: index,
+        name: item[0],
+        altitude: item[1],
+        color: item[2],
+        seedX: item[3],
+        seedY: item[4],
+        speed: item[5],
+        element: null,
+        listButton: null,
+        lat: 0,
+        lng: 0
+      }));
+
+      const mapStage = document.getElementById("mapStage");
+      const satList = document.getElementById("satList");
+      const selectedName = document.getElementById("selectedName");
+      const selectedPosition = document.getElementById("selectedPosition");
+      const selectedAltitude = document.getElementById("selectedAltitude");
+      const clock = document.getElementById("clock");
+      const pauseToggle = document.getElementById("pauseToggle");
+      const speedUp = document.getElementById("speedUp");
+      const speedDown = document.getElementById("speedDown");
+
+      let selectedId = 0;
+      let paused = false;
+      let speedMultiplier = 1;
+      let lastFrame = performance.now();
+      let simulationTime = 0;
+
+      function formatCoordinate(value, suffixA, suffixB) {
+        const suffix = value >= 0 ? suffixA : suffixB;
+        return `${Math.abs(value).toFixed(2)}${suffix}`;
+      }
+
+      function selectSatellite(id) {
+        selectedId = id;
+        satellites.forEach((sat) => {
+          sat.element.classList.toggle("is-focus", sat.id === selectedId);
+          sat.listButton.classList.toggle("active", sat.id === selectedId);
+        });
+        updateReadout(satellites[selectedId]);
+      }
+
+      function updateReadout(sat) {
+        selectedName.textContent = sat.name;
+        selectedPosition.textContent = `${formatCoordinate(sat.lat, "N", "S")} / ${formatCoordinate(sat.lng, "E", "W")}`;
+        selectedAltitude.textContent = `${sat.altitude} km`;
+      }
+
+      function buildSatellites() {
+        satellites.forEach((sat) => {
+          const marker = document.createElement("button");
+          marker.className = "satellite";
+          marker.type = "button";
+          marker.dataset.name = sat.name;
+          marker.style.setProperty("--sat-color", sat.color);
+          marker.style.setProperty("--tilt", `${sat.id * 17}deg`);
+          marker.addEventListener("click", () => selectSatellite(sat.id));
+          mapStage.appendChild(marker);
+          sat.element = marker;
+
+          const item = document.createElement("button");
+          item.className = "sat-item";
+          item.type = "button";
+          item.innerHTML = `
+            <span class="sat-dot" style="--sat-color:${sat.color}"></span>
+            <span>
+              <span class="sat-name">${sat.name}</span>
+              <span class="sat-meta">${sat.altitude} km orbit</span>
+            </span>
+            <span class="badge">LEO</span>
+          `;
+          item.addEventListener("click", () => selectSatellite(sat.id));
+          satList.appendChild(item);
+          sat.listButton = item;
+        });
+      }
+
+      function updateSatellites(now) {
+        const delta = Math.min(0.08, (now - lastFrame) / 1000);
+        lastFrame = now;
+        if (!paused) {
+          simulationTime += delta * speedMultiplier;
+        }
+        const t = simulationTime;
+
+        satellites.forEach((sat) => {
+          const phase = sat.seedX * Math.PI * 2;
+          const wave = Math.sin(t * 0.22 * sat.speed + phase);
+          const drift = (sat.seedX + t * 0.012 * sat.speed) % 1;
+          const y = 0.5 + Math.sin(t * 0.18 * sat.speed + sat.seedY * 8) * 0.34;
+          const x = drift;
+
+          const clampedY = Math.max(0.08, Math.min(0.92, y + wave * 0.04));
+          sat.lng = x * 360 - 180;
+          sat.lat = 90 - clampedY * 180;
+
+          sat.element.style.setProperty("--x", `${x * 100}%`);
+          sat.element.style.setProperty("--y", `${clampedY * 100}%`);
+
+          const meta = sat.listButton.querySelector(".sat-meta");
+          meta.textContent = `${formatCoordinate(sat.lat, "N", "S")} / ${formatCoordinate(sat.lng, "E", "W")}`;
+        });
+
+        updateReadout(satellites[selectedId]);
+        const date = new Date();
+        clock.textContent = `LIVE ${date.toLocaleTimeString("th-TH", { hour12: false })} x${speedMultiplier.toFixed(1)}`;
+        requestAnimationFrame(updateSatellites);
+      }
+
+      pauseToggle.addEventListener("click", () => {
+        paused = !paused;
+        pauseToggle.querySelector("span").textContent = paused ? "Resume" : "Pause";
+      });
+
+      speedUp.addEventListener("click", () => {
+        speedMultiplier = Math.min(3, speedMultiplier + 0.25);
+      });
+
+      speedDown.addEventListener("click", () => {
+        speedMultiplier = Math.max(0.25, speedMultiplier - 0.25);
+      });
+
+      buildSatellites();
+      selectSatellite(0);
+      requestAnimationFrame(updateSatellites);
+    </script>
+  </body>
+</html>
